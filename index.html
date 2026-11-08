@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Lock Challenge | Class IX DTI</title>
+
+<style>
+:root {
+    --navy: #12213a;
+    --blue: #2463eb;
+    --cyan: #54d6c8;
+    --bg: #f3f6fb;
+    --ink: #182235;
+    --green: #16845b;
+    --red: #c0394b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #e8f0ff, #f7fbff);
+    color: var(--ink);
+    min-height: 100vh;
+}
+
+header {
+    background: var(--navy);
+    color: white;
+    padding: 22px 18px;
+    text-align: center;
+    border-bottom: 5px solid var(--cyan);
+}
+
+header h1 {
+    margin: 0 0 7px;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+}
+
+header p {
+    margin: 0;
+    color: #d7e3f7;
+}
+
+.wrap {
+    max-width: 980px;
+    margin: 24px auto;
+    padding: 0 16px 30px;
+}
+
+.toprow {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.pill {
+    background: white;
+    border: 1px solid #dce5f2;
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-weight: bold;
+    color: var(--navy);
+}
+
+#soundBtn {
+    font-size: 1rem;
+}
+
+#soundBtn:hover {
+    background: #f5f8ff;
+}
+
+.progress {
+    height: 10px;
+    background: #dce5f2;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 12px 0 20px;
+}
+
+.bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transition: width 0.3s;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 270px;
+    gap: 18px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #e0e8f3;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 12px 30px #1d355710;
+}
+
+.eyebrow {
+    color: var(--blue);
+    font-weight: bold;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+h2 {
+    margin: 8px 0 12px;
+    font-size: 1.45rem;
+}
+
+.question {
+    font-size: 1.16rem;
+    line-height: 1.5;
+    margin: 18px 0;
+}
+
+.options {
+    display: grid;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border: 2px solid #dce5f2;
+    border-radius: 12px;
+    padding: 13px 14px;
+    cursor: pointer;
+    background: white;
+    transition: 0.15s;
+}
+
+.option:hover {
+    border-color: var(--blue);
+    background: #f5f8ff;
+}
+
+.option input {
+    accent-color: var(--blue);
+}
+
+.option.selected {
+    border-color: var(--blue);
+    background: #eff5ff;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 17px;
+    font-weight: bold;
+    font-size: 0.98rem;
+    cursor: pointer;
+}
+
+.primary {
+    background: var(--blue);
+    color: white;
+}
+
+.primary:hover {
+    background: #164dcc;
+}
+
+.secondary {
+    background: #eaf0fa;
+    color: var(--navy);
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.feedback {
+    margin-top: 16px;
+    padding: 13px 14px;
+    border-radius: 10px;
+    display: none;
+    line-height: 1.45;
+}
+
+.feedback.good {
+    display: block;
+    background: #e8f8f0;
+    color: #126747;
+    border: 1px solid #b7e7d0;
+}
+
+.feedback.bad {
+    display: block;
+    background: #fff0f0;
+    color: #9b2636;
+    border: 1px solid #f4c2c7;
+}
+
+.stage-list {
+    display: grid;
+    gap: 9px;
+}
+
+.stage {
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: #f3f6fb;
+    color: #65748a;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border: 1px solid #e5ebf4;
+}
+
+.stage.active {
+    background: #eaf1ff;
+    color: #1d4ed8;
+    border-color: #b8ccff;
+}
+
+.stage.done {
+    background: #e8f8f0;
+    color: #126747;
+    border-color: #b7e7d0;
+}
+
+.lock {
+    font-size: 3rem;
+    text-align: center;
+    margin: 8px 0;
+}
+
+.small {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.startscreen,
+.endscreen {
+    text-align: center;
+    padding: 20px 5px;
+}
+
+.startscreen .lock,
+.endscreen .lock {
+    font-size: 4.5rem;
+}
+
+.hide {
+    display: none !important;
+}
+
+.note {
+    margin-top: 14px;
+    font-size: 0.82rem;
+    color: #64748b;
+}
+
+/* ---------- Completion reward ---------- */
+.reward {
+    margin: 22px auto 18px;
+    max-width: 560px;
+    padding: 26px 20px;
+    border-radius: 20px;
+    border: 3px solid #f5c542;
+    background: linear-gradient(135deg, #fff8dc, #ffe9a3 55%, #fff3c4);
+    color: #5a4200;
+    box-shadow: 0 0 0 5px #f5c54233, 0 16px 36px #b8860b40;
+    position: relative;
+    overflow: hidden;
+    animation: rewardGlow 2.2s ease-in-out infinite;
+}
+
+.reward .crown {
+    font-size: 4.2rem;
+    line-height: 1;
+    animation: crownBounce 1.6s ease-in-out infinite;
+}
+
+.reward .eyebrow {
+    color: #9a6b00;
+    margin-top: 8px;
+}
+
+.reward h3 {
+    margin: 8px 0 10px;
+    font-size: 1.45rem;
+    color: #7a5200;
+}
+
+.reward p {
+    margin: 0;
+    line-height: 1.55;
+}
+
+.reward .sparkles {
+    margin-top: 12px;
+    font-size: 1.4rem;
+    letter-spacing: 0.4em;
+}
+
+.reward .rays {
+    position: absolute;
+    left: 50%;
+    top: -60px;
+    width: 340px;
+    height: 340px;
+    margin-left: -170px;
+    background: repeating-conic-gradient(#fff6c8aa 0 10deg, transparent 10deg 20deg);
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: raysSpin 14s linear infinite;
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 70%);
+    mask-image: radial-gradient(circle, #000 20%, transparent 70%);
+}
+
+.reward > *:not(.rays) {
+    position: relative;
+    z-index: 1;
+}
+
+.reward h3 {
+    background: linear-gradient(90deg, #6b4600, #9a6b00, #c48a00, #9a6b00, #6b4600);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #7a5200;
+    animation: shimmer 3s linear infinite;
+}
+
+.reward .badges {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 14px 0 4px;
+}
+
+.reward .badge {
+    background: #fffbe8;
+    border: 2px solid #f0c24a;
+    border-radius: 999px;
+    padding: 7px 13px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #7a5200;
+}
+
+.reward .celebrate {
+    margin: 14px 4px 0;
+    background: #7a5200;
+    color: #fff3c4;
+}
+
+.reward .celebrate:hover {
+    background: #5a3c00;
+}
+
+#confetti {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 999;
+}
+
+#confetti span {
+    position: absolute;
+    top: -40px;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0.9; }
+}
+
+@keyframes raysSpin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+    to { background-position: -250% 0; }
+}
+
+@keyframes crownBounce {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-8px) rotate(4deg); }
+}
+
+@keyframes rewardGlow {
+    0%, 100% { box-shadow: 0 0 0 5px #f5c54233, 0 16px 36px #b8860b40; }
+    50% { box-shadow: 0 0 0 9px #f5c54255, 0 16px 44px #d4a01766; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reward, .reward .crown, .reward .rays, .reward h3 { animation: none; }
+}
+
+@media (max-width: 760px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .panel {
+        padding: 19px;
+    }
+
+    .stage-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🔐 Digital Number System</h1>
+    <p>The Digital Lock Challenge · Class IX DTI</p>
+</header>
+
+<div class="wrap">
+
+    <div class="toprow">
+        <div class="pill" id="stagePill">Stage 1 of 12</div>
+        <div class="pill" id="scorePill">Score: 0</div>
+        <div class="pill" id="attemptPill">Attempts: 0</div>
+        <button type="button" class="pill" id="soundBtn">🔊 Sound: On</button>
+    </div>
+
+    <div class="progress">
+        <div class="bar" id="bar"></div>
+    </div>
+
+    <div class="layout">
+
+        <main class="panel">
+
+            <div class="startscreen" id="startScreen">
+                <div class="lock">🔒</div>
+                <div class="eyebrow">Mission briefing</div>
+
+                <h2>Can you unlock the digital vault?</h2>
+
+                <p>
+                    Answer questions based on your Chapter 1 notes.
+                    Each correct answer opens the next stage.
+                    If you answer incorrectly, review the learning
+                    materials and try again.
+                </p>
+
+                <p class="small">
+                    Topics include number systems, conversions, ASCII,
+                    image representation, digital audio, storage units
+                    and logic gates.
+                </p>
+
+                <button class="primary" id="startBtn">
+                    Start the challenge →
+                </button>
+
+                <button class="primary hide" id="continueBtn">
+                    Continue Challenge →
+                </button>
+
+                <p class="small hide" id="savedInfo"></p>
+            </div>
+
+            <div id="gameScreen" class="hide">
+
+                <div class="eyebrow" id="topicLabel">Topic</div>
+
+                <h2 id="questionTitle">Question</h2>
+
+                <div class="question" id="questionText"></div>
+
+                <form id="answerForm">
+
+                    <div class="options" id="options"></div>
+
+                    <div class="actions">
+                        <button class="primary" type="submit" id="checkBtn">
+                            Check answer
+                        </button>
+
+                        <button class="secondary" type="button"
+                                id="nextBtn" disabled>
+                            Next stage →
+                        </button>
+                    </div>
+
+                </form>
+
+                <div class="feedback" id="feedback"
+                     role="status" aria-live="polite"></div>
+
+                <div class="note">
+                    Tip: You can retry a question until you answer it correctly.
+                </div>
+
+            </div>
+
+            <div id="confetti" aria-hidden="true"></div>
+
+            <div class="endscreen hide" id="endScreen">
+
+                <div class="lock">🔓</div>
+                <div class="eyebrow">Mission complete</div>
+
+                <h2>You unlocked the digital vault!</h2>
+
+                <p id="finalMessage"></p>
+
+                <p class="small hide" id="crownHint">
+                    👑 The Golden Digital Crown is waiting for you! Answer all
+                    12 questions correctly on your very first try to score
+                    100/100, then press Play again to go for it!
+                </p>
+
+                <div class="reward hide" id="rewardBox">
+                    <div class="rays"></div>
+                    <div class="crown">👑</div>
+                    <div class="eyebrow">Legendary achievement unlocked</div>
+                    <h3>Golden Digital Crown – Legendary Vault Master 👑</h3>
+                    <p id="rewardText">
+                        Flawless! You cracked all 12 locks on your very first
+                        try and scored a perfect 100/100. The vault has never
+                        bowed to a sharper mind. Wear your crown with pride,
+                        Master of the Digital Number System! 🏆
+                    </p>
+                    <div class="badges" id="rewardBadges">
+                        <span class="badge">🔓 12/12 locks opened</span>
+                        <span class="badge">🏆 100/100 marks</span>
+                        <span class="badge">⚡ Zero mistakes</span>
+                    </div>
+                    <div class="sparkles">✨🏆✨</div>
+                    <button type="button" class="celebrate" id="celebrateBtn">
+                        🎉 Celebrate again!
+                    </button>
+                    <button type="button" class="celebrate" id="musicBtn">
+                        🔊 Sound: On
+                    </button>
+                </div>
+
+                <button class="primary" id="restartBtn">
+                    Play again ↻
+                </button>
+
+                <p class="small">
+                    Review your digital notes to practise these concepts again.
+                </p>
+
+            </div>
+
+        </main>
+
+        <aside class="panel">
+            <h3>🔑 Lock stages</h3>
+
+            <div class="stage-list" id="stageList"></div>
+
+            <p class="small" style="margin-top: 15px">
+                A stage is marked complete after a correct answer.
+                Your score increases the first time you solve each question.
+            </p>
+        </aside>
+
+    </div>
+</div>
+
+<script>
+const questions = [
+    {
+        topic: "Number systems",
+        title: "Stage 1 · Binary key",
+        q: "Which two digits are used in the binary number system?",
+        opts: ["0 and 1", "0 to 7", "0 to 9", "0 to 15"],
+        a: 0,
+        why: "Binary is base 2 and uses only the digits 0 and 1."
+    },
+    {
+        topic: "Number systems",
+        title: "Stage 2 · Decimal lock",
+        q: "Why is the decimal number system called base 10?",
+        opts: [
+            "It uses 2 digits",
+            "It uses 8 digits",
+            "It uses 10 digits, from 0 to 9",
+            "It uses 16 digits"
+        ],
+        a: 2,
+        why: "Decimal uses ten digits: 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9."
+    },
+    {
+        topic: "Number conversion",
+        title: "Stage 3 · Binary to decimal",
+        q: "What is the decimal value of binary 1011₂?",
+        opts: ["9", "10", "11", "13"],
+        a: 2,
+        why: "1×8 + 0×4 + 1×2 + 1×1 = 11."
+    },
+    {
+        topic: "Number conversion",
+        title: "Stage 4 · Binary to octal",
+        q: "Using the grouping method, what is 10110₂ in octal?",
+        opts: ["24₈", "26₈", "32₈", "16₈"],
+        a: 1,
+        why: "Group from the right: 010 110. The groups equal 2 and 6, giving 26₈."
+    },
+    {
+        topic: "Number conversion",
+        title: "Stage 5 · Decimal to binary",
+        q: "What is decimal 13 in binary?",
+        opts: ["1011₂", "1101₂", "1110₂", "1001₂"],
+        a: 1,
+        why: "Converting decimal 13 to binary gives 1101₂."
+    },
+    {
+        topic: "ASCII",
+        title: "Stage 6 · Character code",
+        q: "What is the ASCII decimal value of capital A?",
+        opts: ["65", "97", "48", "90"],
+        a: 0,
+        why: "Capital A has ASCII value 65. Lowercase a has value 97."
+    },
+    {
+        topic: "Image representation",
+        title: "Stage 7 · Pixel lock",
+        q: "In the simple black-and-white image model, what does 1 represent?",
+        opts: [
+            "White (off)",
+            "Black (on)",
+            "A sound sample",
+            "One byte"
+        ],
+        a: 1,
+        why: "In the model used here, 1 represents black (on), and 0 represents white (off)."
+    },
+    {
+        topic: "Digital audio",
+        title: "Stage 8 · Sound signal",
+        q: "What can happen if sound is sampled too slowly?",
+        opts: [
+            "Sound quality always improves",
+            "Sound information may be lost",
+            "The sound becomes an image",
+            "The file no longer uses binary data"
+        ],
+        a: 1,
+        why: "Sampling too slowly can lose sound information and reduce the quality of the digital recording."
+    },
+    {
+        topic: "Storage units",
+        title: "Stage 9 · Storage vault",
+        q: "According to the storage-unit convention used in this quiz, how many bytes are in 1 KB?",
+        opts: ["8", "100", "1000", "1024"],
+        a: 3,
+        why: "This quiz uses the convention 1 KB = 1024 bytes."
+    },
+    {
+        topic: "Logic gates",
+        title: "Stage 10 · AND gate",
+        q: "When does an AND gate produce output 1?",
+        opts: [
+            "Whenever either input is 1",
+            "Only when both inputs are 1",
+            "Only when both inputs are 0",
+            "Whenever the inputs are different"
+        ],
+        a: 1,
+        why: "An AND gate outputs 1 only when both inputs are 1."
+    },
+    {
+        topic: "Logic gates",
+        title: "Stage 11 · NOT gate",
+        q: "What is the output of a NOT gate when its input is 0?",
+        opts: ["0", "1", "Both 0 and 1", "It has no output"],
+        a: 1,
+        why: "A NOT gate reverses its input: 0 becomes 1 and 1 becomes 0."
+    },
+    {
+        topic: "Truth tables",
+        title: "Stage 12 · Final lock",
+        q: "How many possible input combinations are there for a truth table with 3 binary inputs?",
+        opts: ["3", "6", "8", "9"],
+        a: 2,
+        why: "The number of combinations is 2ⁿ. For 3 inputs, 2³ = 8."
+    }
+];
+
+const stages = [
+    "Binary basics",
+    "Decimal system",
+    "Binary to decimal",
+    "Binary to octal",
+    "Decimal to binary",
+    "ASCII",
+    "Pixels",
+    "Digital audio",
+    "Storage units",
+    "AND gate",
+    "NOT gate",
+    "Final lock"
+];
+
+let current = 0;
+let score = 0;
+let attempts = 0;
+let completed = new Set();
+let answered = false;
+let firstTry = 0;                 // questions solved on the very first attempt
+let wrongSet = new Set();         // questions that had at least one wrong attempt
+let lastResult = "";              // "", "correct" or "wrong" for the current question
+
+const TOTAL_MARKS = 100;
+const SAVE_KEY = "digitalLockChallenge.progress.v1";
+const WRONG_MSG =
+    "Incorrect answer. Please review your Chapter 1 textbook notes " +
+    "or watch the learning videos again, then try this question once more.";
+
+const $ = id => document.getElementById(id);
+
+/* ---------- Save / restore progress (localStorage) ---------- */
+function saveProgress() {
+    try {
+        localStorage.setItem(SAVE_KEY, JSON.stringify({
+            current: current,
+            score: score,
+            attempts: attempts,
+            completed: Array.from(completed),
+            wrong: Array.from(wrongSet),
+            firstTry: firstTry,
+            lastResult: lastResult
+        }));
+    } catch (e) { /* storage unavailable - game still works */ }
+}
+
+function clearProgress() {
+    try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+}
+
+function loadSavedProgress() {
+    try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) return null;
+
+        const d = JSON.parse(raw);
+        const n = questions.length;
+        const validIdx = v => Number.isInteger(v) && v >= 0 && v < n;
+
+        if (!d || !validIdx(d.current)) return null;
+        if (!Number.isFinite(d.attempts) || d.attempts < 0) return null;
+        if (!Array.isArray(d.completed) || !d.completed.every(validIdx)) return null;
+        if (!Array.isArray(d.wrong) || !d.wrong.every(validIdx)) return null;
+
+        const done = new Set(d.completed);
+        const wrong = new Set(d.wrong);
+        const ft = Array.from(done).filter(i => !wrong.has(i)).length;
+
+        return {
+            current: d.current,
+            attempts: Math.floor(d.attempts),
+            completed: done,
+            wrong: wrong,
+            firstTry: ft,
+            score: Math.round(ft * TOTAL_MARKS / n),
+            lastResult: d.lastResult === "wrong" || d.lastResult === "correct"
+                ? d.lastResult : ""
+        };
+    } catch (e) {
+        return null;
+    }
+}
+
+function applySaved(s) {
+    current = s.current;
+    score = s.score;
+    attempts = s.attempts;
+    completed = s.completed;
+    wrongSet = s.wrong;
+    firstTry = s.firstTry;
+    lastResult = (s.lastResult === "correct" && !s.completed.has(s.current))
+        ? "" : s.lastResult;
+}
+
+function resetState() {
+    current = 0;
+    score = 0;
+    attempts = 0;
+    completed = new Set();
+    wrongSet = new Set();
+    firstTry = 0;
+    lastResult = "";
+    answered = false;
+}
+
+/* ---------- Celebration (every student who completes all stages) ---------- */
+function launchConfetti() {
+    const box = $("confetti");
+    box.innerHTML = "";
+
+    if (window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const pieces = ["👑", "✨", "🏆", "🎉", "⭐", "🔓"];
+    const colors = ["#f5c542", "#2463eb", "#54d6c8", "#e8590c", "#16845b", "#c0394b"];
+
+    for (let i = 0; i < 90; i++) {
+        const s = document.createElement("span");
+        const emoji = i % 3 === 0;
+
+        if (emoji) {
+            s.textContent = pieces[Math.floor(Math.random() * pieces.length)];
+            s.style.fontSize = (18 + Math.random() * 18) + "px";
+        } else {
+            s.style.width = (7 + Math.random() * 7) + "px";
+            s.style.height = (10 + Math.random() * 10) + "px";
+            s.style.background = colors[Math.floor(Math.random() * colors.length)];
+            s.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+        }
+
+        s.style.left = Math.random() * 100 + "vw";
+        s.style.animationDuration = (3 + Math.random() * 3.5) + "s";
+        s.style.animationDelay = (Math.random() * 1.8) + "s";
+        box.appendChild(s);
+    }
+
+    clearTimeout(launchConfetti.timer);
+    launchConfetti.timer = setTimeout(() => { box.innerHTML = ""; }, 10000);
+}
+
+/* ---------- Sound: voice, sound effects and victory music ----------
+   Everything is generated by the browser (no audio files needed). */
+const SOUND_KEY = "digitalLockChallenge.sound";
+let soundOn = true;
+try { soundOn = localStorage.getItem(SOUND_KEY) !== "off"; } catch (e) {}
+
+let audioCtx = null;
+let musicMaster = null;
+let noiseBuf = null;
+
+function getCtx() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audioCtx) audioCtx = new AC();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+
+    if (!noiseBuf) {
+        noiseBuf = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
+        const data = noiseBuf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    }
+    return audioCtx;
+}
+
+function updateSoundBtns() {
+    const label = soundOn ? "🔊 Sound: On" : "🔇 Sound: Off";
+    $("soundBtn").textContent = label;
+    $("musicBtn").textContent = label;
+}
+
+/* Spoken voice (built-in browser text-to-speech) */
+function speak(text, mood) {
+    if (!soundOn || !("speechSynthesis" in window)) return;
+
+    // Cheerful settings: higher pitch and a lively pace
+    const cheer = mood === "cheer";
+    const pitch = cheer ? 1.55 : 1.3;
+    const rate = cheer ? 1.1 : 1.02;
+
+    try {
+        const synth = window.speechSynthesis;
+        synth.cancel();
+
+        const u = new SpeechSynthesisUtterance(text);
+        const voices = synth.getVoices ? synth.getVoices() : [];
+        const voice =
+            voices.find(v => /^en/i.test(v.lang) &&
+                /aria|jenny|samantha|zira|google us english|google uk english female|female/i.test(v.name)) ||
+            voices.find(v => /^en/i.test(v.lang));
+
+        if (voice) u.voice = voice;
+        u.lang = voice ? voice.lang : "en-US";
+        u.rate = rate;
+        u.pitch = pitch;
+        u.volume = 1;
+
+        synth.speak(u);
+    } catch (e) { /* speech not available - game still works */ }
+}
+
+function stopSpeech() {
+    try {
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    } catch (e) {}
+}
+
+function stopMusic() {
+    if (musicMaster && audioCtx) {
+        try {
+            const t = audioCtx.currentTime;
+            musicMaster.gain.cancelScheduledValues(t);
+            musicMaster.gain.setValueAtTime(musicMaster.gain.value, t);
+            musicMaster.gain.linearRampToValueAtTime(0.0001, t + 0.15);
+        } catch (e) {}
+    }
+    musicMaster = null;
+}
+
+function stopAllSound() {
+    stopMusic();
+    stopSpeech();
+}
+
+/* Short sound effect tone */
+function tone(ctx, dest, freq, t0, dur, type, peak) {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+
+    osc.type = type;
+    osc.frequency.value = freq;
+
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(peak, t0 + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+    osc.connect(g);
+    g.connect(dest);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.05);
+}
+
+/* Correct answer: happy chime + "Wow, your answer is correct!" */
+function playCorrect() {
+    if (!soundOn) return;
+
+    try {
+        const ctx = getCtx();
+        if (ctx) {
+            const out = ctx.createGain();
+            out.gain.value = 0.3;
+            out.connect(ctx.destination);
+
+            [1046.5, 1318.51, 1567.98, 2093].forEach((f, i) => {
+                tone(ctx, out, f, ctx.currentTime + i * 0.09, 0.3, "triangle", 0.6);
+            });
+        }
+    } catch (e) {}
+
+    speak("Wow! Your answer is correct! Awesome job!", "cheer");
+}
+
+/* Wrong answer: soft buzzer + "Sorry, you are wrong." */
+function playWrong() {
+    if (!soundOn) return;
+
+    try {
+        const ctx = getCtx();
+        if (ctx) {
+            const t0 = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const filter = ctx.createBiquadFilter();
+            const g = ctx.createGain();
+
+            osc.type = "sawtooth";
+            osc.frequency.setValueAtTime(220, t0);
+            osc.frequency.linearRampToValueAtTime(110, t0 + 0.4);
+
+            filter.type = "lowpass";
+            filter.frequency.value = 900;
+
+            g.gain.setValueAtTime(0.0001, t0);
+            g.gain.linearRampToValueAtTime(0.25, t0 + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.45);
+
+            osc.connect(filter);
+            filter.connect(g);
+            g.connect(ctx.destination);
+            osc.start(t0);
+            osc.stop(t0 + 0.5);
+        }
+    } catch (e) {}
+
+    speak("Sorry, you are wrong. But don't worry, you can do it! Try again!", "kind");
+}
+
+/* Victory music: drums + bass + chords + a catchy hook (about 15 seconds) */
+function playFanfare() {
+    if (!soundOn) return;
+
+    try {
+        const ctx = getCtx();
+        if (!ctx) return;
+
+        stopMusic();
+
+        const comp = ctx.createDynamicsCompressor();
+        const master = ctx.createGain();
+        master.gain.value = 0.55;
+        master.connect(comp);
+        comp.connect(ctx.destination);
+        musicMaster = master;
+
+        const bassFilter = ctx.createBiquadFilter();
+        bassFilter.type = "lowpass";
+        bassFilter.frequency.value = 600;
+        bassFilter.connect(master);
+
+        const beat = 60 / 132;                      // 132 BPM
+        const t = b => ctx.currentTime + 0.08 + b * beat;
+
+        function note(freq, startBeat, lenBeats, type, peak, dest) {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            const t0 = t(startBeat);
+            const dur = Math.max(lenBeats * beat * 0.95, 0.1);
+
+            osc.type = type;
+            osc.frequency.value = freq;
+
+            g.gain.setValueAtTime(0.0001, t0);
+            g.gain.linearRampToValueAtTime(peak, t0 + 0.012);
+            g.gain.exponentialRampToValueAtTime(peak * 0.55, t0 + dur * 0.6);
+            g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+            osc.connect(g);
+            g.connect(dest || master);
+            osc.start(t0);
+            osc.stop(t0 + dur + 0.05);
+        }
+
+        function noise(startBeat, dur, hpFreq, peak) {
+            const src = ctx.createBufferSource();
+            const hp = ctx.createBiquadFilter();
+            const g = ctx.createGain();
+            const t0 = t(startBeat);
+
+            src.buffer = noiseBuf;
+            hp.type = "highpass";
+            hp.frequency.value = hpFreq;
+
+            g.gain.setValueAtTime(peak, t0);
+            g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+            src.connect(hp);
+            hp.connect(g);
+            g.connect(master);
+            src.start(t0);
+            src.stop(t0 + dur + 0.05);
+        }
+
+        function kick(b) {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            const t0 = t(b);
+
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(160, t0);
+            osc.frequency.exponentialRampToValueAtTime(45, t0 + 0.12);
+
+            g.gain.setValueAtTime(1, t0);
+            g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.25);
+
+            osc.connect(g);
+            g.connect(master);
+            osc.start(t0);
+            osc.stop(t0 + 0.3);
+        }
+
+        function snare(b) {
+            noise(b, 0.16, 1500, 0.55);
+            note(190, b, 0.3, "triangle", 0.35);
+        }
+
+        function hat(b, level) {
+            noise(b, 0.05, 7000, level);
+        }
+
+        const roots = [130.81, 98, 110, 87.31, 130.81, 98, 87.31, 130.81];  // C G Am F C G F C
+        const chords = [
+            [261.63, 329.63, 392],      // C
+            [246.94, 293.66, 392],      // G
+            [220, 261.63, 329.63],      // Am
+            [220, 261.63, 349.23],      // F
+            [261.63, 329.63, 392],      // C
+            [246.94, 293.66, 392],      // G
+            [220, 261.63, 349.23],      // F
+            [261.63, 329.63, 392]       // C
+        ];
+
+        for (let bar = 0; bar < 8; bar++) {
+            const b0 = bar * 4;
+            const last = bar === 7;
+
+            // drums
+            for (let i = 0; i < (last ? 2 : 4); i++) kick(b0 + i);
+            snare(b0 + 1);
+            if (!last) snare(b0 + 3);
+            for (let i = 0; i < (last ? 4 : 8); i++) hat(b0 + i * 0.5, i % 2 ? 0.2 : 0.12);
+
+            // bass line
+            [[0, .45, 1], [1, .45, 1], [1.5, .3, 2], [2, .45, 1], [3, .45, 1], [3.5, .3, 2]]
+                .forEach(n => {
+                    if (last && n[0] >= 2) return;
+                    note(roots[bar] * n[2], b0 + n[0], n[1], "sawtooth", 0.35, bassFilter);
+                });
+
+            // off-beat chord stabs
+            (last ? [0.5, 1.5] : [0.5, 1.5, 2.5, 3.5]).forEach(o => {
+                chords[bar].forEach(f => note(f, b0 + o, 0.22, "square", 0.07));
+            });
+        }
+
+        // drum fill into the second half, crash cymbals
+        [15.25, 15.5, 15.75].forEach(b => snare(b));
+        noise(16, 1.2, 4000, 0.35);
+        noise(30, 1.8, 4000, 0.45);
+        kick(30);
+
+        // catchy lead hook  [start beat, length, Hz]
+        const lead = [
+            [0, .5, 659.25], [.5, .5, 783.99], [1, 1, 1046.5], [2, .5, 987.77], [2.5, .5, 783.99], [3, 1, 659.25],
+            [4, .5, 587.33], [4.5, .5, 783.99], [5, 1, 987.77], [6, .5, 880], [6.5, .5, 783.99], [7, 1, 587.33],
+            [8, .5, 659.25], [8.5, .5, 880], [9, 1, 1046.5], [10, .5, 987.77], [10.5, .5, 880], [11, 1, 659.25],
+            [12, .5, 698.46], [12.5, .5, 880], [13, 1, 1046.5], [14, .5, 1174.66], [14.5, .5, 1046.5], [15, 1, 880],
+            [16, .5, 783.99], [16.5, .5, 1046.5], [17, 1, 1318.51], [18, .5, 1174.66], [18.5, .5, 1046.5], [19, 1, 783.99],
+            [20, .5, 987.77], [20.5, .5, 1174.66], [21, 1, 1567.98], [22, .5, 1396.91], [22.5, .5, 1174.66], [23, 1, 987.77],
+            [24, .5, 880], [24.5, .5, 1046.5], [25, 1, 1396.91], [26, .5, 1318.51], [26.5, .5, 1174.66], [27, 1, 1046.5],
+            [28, .5, 1046.5], [28.5, .5, 1318.51], [29, .5, 1567.98], [29.5, .5, 1318.51], [30, 2.5, 2093]
+        ];
+
+        lead.forEach(n => {
+            note(n[2], n[0], n[1], "square", 0.15);
+            note(n[2], n[0], n[1], "triangle", 0.22);
+        });
+
+        // big final chord
+        [261.63, 329.63, 392, 523.25, 659.25, 783.99].forEach(f => {
+            note(f, 30, 2.5, "sawtooth", 0.09);
+        });
+    } catch (e) { /* audio not available - celebration still works */ }
+}
+
+function showStartOptions() {
+    const hasSave = !!loadSavedProgress();
+    $("startBtn").classList.toggle("hide", hasSave);
+    $("continueBtn").classList.toggle("hide", !hasSave);
+    $("savedInfo").classList.toggle("hide", !hasSave);
+
+    if (hasSave) {
+        $("savedInfo").textContent =
+            `Saved progress: Stage ${current + 1} of ${questions.length} · ` +
+            `Score ${score} / ${TOTAL_MARKS} · ${attempts} attempts`;
+    }
+}
+
+function renderStages() {
+    $("stageList").innerHTML = stages.map((stage, i) => {
+        let status = "";
+
+        if (completed.has(i)) {
+            status = "done";
+        } else if (i === current) {
+            status = "active";
+        }
+
+        let symbol = completed.has(i)
+            ? "✓"
+            : i === current ? "🔓" : "🔒";
+
+        return `<div class="stage ${status}">
+            ${symbol} ${i + 1}. ${stage}
+        </div>`;
+    }).join("");
+}
+
+function updateTop() {
+    $("stagePill").textContent =
+        `Stage ${Math.min(current + 1, questions.length)} of ${questions.length}`;
+
+    $("scorePill").textContent = `Score: ${score} / ${TOTAL_MARKS}`;
+    $("attemptPill").textContent = `Attempts: ${attempts}`;
+
+    $("bar").style.width =
+        `${completed.size / questions.length * 100}%`;
+}
+
+function loadQuestion() {
+    const q = questions[current];
+
+    answered = false;
+
+    $("topicLabel").textContent = q.topic;
+    $("questionTitle").textContent = q.title;
+    $("questionText").textContent = q.q;
+
+    $("options").innerHTML = q.opts.map((option, i) => `
+        <label class="option">
+            <input type="radio" name="answer" value="${i}">
+            <span>${String.fromCharCode(65 + i)}. ${option}</span>
+        </label>
+    `).join("");
+
+    $("feedback").className = "feedback";
+    $("feedback").textContent = "";
+
+    $("checkBtn").disabled = false;
+    $("nextBtn").disabled = true;
+
+    $("nextBtn").textContent =
+        current === questions.length - 1
+            ? "Unlock vault →"
+            : "Next stage →";
+
+    document.querySelectorAll(".option").forEach(option => {
+        option.addEventListener("click", () => {
+            document.querySelectorAll(".option").forEach(item => {
+                item.classList.remove("selected");
+            });
+
+            option.classList.add("selected");
+        });
+    });
+
+    renderStages();
+    updateTop();
+}
+
+$("startBtn").addEventListener("click", () => {
+    $("startScreen").classList.add("hide");
+    $("gameScreen").classList.remove("hide");
+
+    loadQuestion();
+    saveProgress();
+
+    speak("Welcome to the Digital Lock Challenge! Let's have some fun and unlock the vault!", "cheer");
+});
+
+/* Continue Challenge: resume at the exact question where the student stopped */
+$("continueBtn").addEventListener("click", () => {
+    const saved = loadSavedProgress();
+    if (!saved) { showStartOptions(); return; }
+
+    applySaved(saved);
+    speak("Welcome back to the Digital Lock Challenge! Let's keep going!", "cheer");
+
+    $("startScreen").classList.add("hide");
+    $("gameScreen").classList.remove("hide");
+
+    loadQuestion();
+
+    const feedback = $("feedback");
+
+    if (lastResult === "correct") {
+        // Question already solved: show result and allow moving on
+        const q = questions[current];
+        answered = true;
+
+        feedback.className = "feedback good";
+        feedback.textContent = "Correct! 🔓 " + q.why;
+
+        $("checkBtn").disabled = true;
+        $("nextBtn").disabled = false;
+
+        document.querySelectorAll('input[name="answer"]').forEach(input => {
+            input.disabled = true;
+            if (Number(input.value) === q.a) {
+                input.checked = true;
+                input.closest(".option").classList.add("selected");
+            }
+        });
+    } else if (lastResult === "wrong") {
+        // Left after a wrong answer: same question, retry with the study reminder
+        feedback.className = "feedback bad";
+        feedback.textContent = WRONG_MSG;
+    }
+});
+
+$("answerForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    if (answered) return;
+
+    const picked = document.querySelector(
+        'input[name="answer"]:checked'
+    );
+
+    const feedback = $("feedback");
+
+    if (!picked) {
+        feedback.className = "feedback bad";
+        feedback.textContent = "Please select an answer first.";
+        return;
+    }
+
+    attempts++;
+
+    const q = questions[current];
+
+    if (Number(picked.value) === q.a) {
+        answered = true;
+
+        if (!completed.has(current)) {
+            completed.add(current);
+
+            // Marks are out of 100; only first-attempt answers earn full marks
+            if (!wrongSet.has(current)) {
+                firstTry++;
+            }
+            score = Math.round(firstTry * TOTAL_MARKS / questions.length);
+        }
+
+        lastResult = "correct";
+
+        feedback.className = "feedback good";
+        feedback.textContent = "Correct! 🔓 " + q.why;
+
+        $("checkBtn").disabled = true;
+        $("nextBtn").disabled = false;
+
+        document.querySelectorAll(
+            'input[name="answer"]'
+        ).forEach(input => {
+            input.disabled = true;
+        });
+
+        playCorrect();
+
+    } else {
+        wrongSet.add(current);
+        lastResult = "wrong";
+
+        feedback.className = "feedback bad";
+        feedback.textContent = WRONG_MSG;
+
+        playWrong();
+    }
+
+    updateTop();
+    renderStages();
+    saveProgress();
+});
+
+$("nextBtn").addEventListener("click", () => {
+    if (!answered) return;
+
+    stopSpeech();
+
+    if (current < questions.length - 1) {
+        current++;
+        lastResult = "";
+        loadQuestion();
+        saveProgress();
+    } else {
+        $("gameScreen").classList.add("hide");
+        $("endScreen").classList.remove("hide");
+
+        $("finalMessage").textContent =
+            `You completed all ${questions.length} stages and earned ` +
+            `${score}/${TOTAL_MARKS} marks in ${attempts} attempts. Great work!`;
+
+        // Reward for EVERY student who completes all stages
+        const perfect = score === TOTAL_MARKS;
+
+        if (perfect) {
+            $("rewardText").textContent =
+                "Flawless! You cracked all 12 locks on your very first " +
+                "try and scored a perfect 100/100. The vault has never " +
+                "bowed to a sharper mind. Wear your crown with pride, " +
+                "Master of the Digital Number System! 🏆";
+            $("rewardBadges").innerHTML =
+                '<span class="badge">🔓 12/12 locks opened</span>' +
+                '<span class="badge">🏆 100/100 marks</span>' +
+                '<span class="badge">⚡ Zero mistakes</span>';
+        } else {
+            $("rewardText").textContent =
+                "Well done! You made mistakes along the way, but you learned " +
+                "from them, tried again and cracked all 12 locks. That is what " +
+                "a true Vault Master does. Wear your crown with pride, " +
+                "Master of the Digital Number System! 🏆";
+            $("rewardBadges").innerHTML =
+                '<span class="badge">🔓 12/12 locks opened</span>' +
+                '<span class="badge">🏆 ' + score + '/' + TOTAL_MARKS + ' marks</span>' +
+                '<span class="badge">💪 Never gave up</span>';
+        }
+
+        $("rewardBox").classList.remove("hide");
+        $("crownHint").classList.add("hide");
+
+        launchConfetti();
+        playFanfare();
+        speak("Congratulations! You are the Legendary Vault Master! Hooray!", "cheer");
+
+        updateTop();
+        renderStages();
+
+        // Game finished: clear the saved active-game progress
+        clearProgress();
+    }
+});
+
+$("restartBtn").addEventListener("click", () => {
+    resetState();
+    clearProgress();
+
+    stopAllSound();
+    $("rewardBox").classList.add("hide");
+    $("crownHint").classList.add("hide");
+    $("confetti").innerHTML = "";
+    $("endScreen").classList.add("hide");
+    $("startScreen").classList.remove("hide");
+
+    showStartOptions();
+    updateTop();
+    renderStages();
+});
+
+$("celebrateBtn").addEventListener("click", () => {
+    launchConfetti();
+    playFanfare();
+});
+
+function toggleSound() {
+    soundOn = !soundOn;
+    try { localStorage.setItem(SOUND_KEY, soundOn ? "on" : "off"); } catch (e) {}
+    updateSoundBtns();
+
+    if (soundOn) {
+        if ($("endScreen").classList.contains("hide") === false &&
+            $("rewardBox").classList.contains("hide") === false) {
+            playFanfare();
+        }
+    } else {
+        stopAllSound();
+    }
+}
+
+$("soundBtn").addEventListener("click", toggleSound);
+$("musicBtn").addEventListener("click", toggleSound);
+
+updateSoundBtns();
+
+// On page load: if saved progress exists, show it and offer "Continue Challenge"
+(function init() {
+    const saved = loadSavedProgress();
+    if (saved) {
+        applySaved(saved);
+    }
+    showStartOptions();
+    renderStages();
+    updateTop();
+})();
+</script>
+
+</body>
+</html>
